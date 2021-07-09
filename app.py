@@ -20,30 +20,26 @@ def loadCowinData():
     resp = requests.get(API_URL)
     return resp.content
 
+#utility function to play song
 def playSong():
-    '''
-    utility function to play song
-    '''
     mixer.init()
     mixer.music.load("song.mp3")
     mixer.music.set_volume(10)
     mixer.music.play()
-
+    
+    
+#utility function to parse API JSON response
 def parseJSON(res):
-    '''
-    utility function to parse API JSON response
-    '''
     root = json.loads(res);
     centres = root['centers']
     if len(centres) == 0:
         return "No centres found !!" 
     else:
         return checkVaccineAvailabilty(centres)
-
+    
+    
+# utility function to check for vaccine availablity
 def checkVaccineAvailabilty(centres):
-    '''
-    utility function to check for vaccine availablity
-    '''
     for center in centres:
         block = center['block_name']
         for session in center['sessions']:
@@ -54,27 +50,22 @@ def checkVaccineAvailabilty(centres):
     print(currentDateTime() + ' :: None found in ' + block + '. Checking in a minute ...')
     print("#############################################")
     print ("---------------------------------------------")
-    return 'None'    
+    return 'None'   
 
+
+#utility function to get current date and time
 def currentDateTime():
-    '''
-    utility function to get current date and time
-    '''
     return datetime.datetime.now().strftime("%d-%m-%Y, %H:%M:%S")
 
+
+#utility method to show desktop notification
 def showNotification(message):
-    '''
-    utility method to show desktop notification 
-    '''
     toaster.show_toast("Cowin Notification",
     message,
     icon_path="custom.ico",
     duration=30)
 
 def main():
-    '''
-    the main function 
-    '''
     response = loadCowinData()
     vaccine_available = parseJSON(response)
     if vaccine_available != 'None':
